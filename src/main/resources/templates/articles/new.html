@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+
+        <meta charset="UTF-8">
+        <title>Title</title>
+
+        <script>
+            $(function(){
+                $('#article-create-btn').click(function (){
+                    let article = {
+                        title: $("#new-article-title").val(),
+                        content: $("#new-article-content").val()
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/articles",
+                        data: JSON.stringify(article),
+                        contentType: "application/json",
+                        success: function (){
+                            alert("게시글이 등록이되었습니다");
+                            location.href = "/articles";
+                        }
+                    })
+                })
+            })
+        </script>
+    </head>
+    <body>
+        <div th:insert="layouts/header.html" id="header"></div>
+
+        <!-- 새글 작성 폼 -->
+        <div class="container" id="articles-new">
+            <!-- 제목 입력 -->
+            <div class="mb-3">
+                <label class="form-label">제목</label>
+
+                <input type="text" class="form-control" id="new-article-title">
+            </div>
+            <!-- 내용 입력 -->
+            <div class="mb-3">
+                <label class="form-label">내용</label>
+                <textarea class="form-control" rows="3" id="new-article-content"></textarea>
+            </div>
+            <!-- 전송 버튼 -->
+            <button type="submit" class="btn btn-primary" id="article-create-btn">Submit</button>
+            <a  th:href="@{/articles}">Back</a>
+        </div>
+
+        <div th:insert="layouts/footer.html" id="footer"></div>
+    </body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+        <meta charset="UTF-8">
+
+        <title>Document</title>
+        <script>
+            $(function () {
+                const articleId = location.href.split("/").reverse()[0];
+                let id;
+                let commentLists = new Vue({
+                    el: "#comments",
+                    data: {
+                        commentList: {}
+                    },
+                })
+                $.ajax({
+                    type: "GET",
+                    url: "/api/articles/" + articleId + "/comments",
+                    success: function (response) {
+                        console.dir(response);
+                        commentLists.commentList = response;
+
+                        setTimeout(function () {
+
+                            //PATCH
+                            $(".comment-patch-btn").click(function () {
+
+                                //바로 다음 comment-id의 클래스를 가져옴
+                                id = $(this).nextAll('.comment-id').val();
+                                console.log(id);
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/api/comment/" + id,
+                                    success: function (response) {
+                                        console.dir(response);
+
+                                        $("#patch-nickname").val(response.nickname)
+                                        $("#patch-body").val(response.body)
+                                    }
+                                })
+                            })
+                            //DELETE
+                            $(".comment-delete-btn").click(function () {
+                                if (confirm("삭제 하시겠습니까?") == true) {
+                                    id = $(this).nextAll('.comment-id').val();
+                                    $.ajax({
+                                        type: "DELETE",
+                                        url: "/api/comments/" + id,
+                                        success: function () {
+                                            alert("댓글이 삭제되었습니다");
+                                            window.location.reload(true);
+                                        }
+                                    })
+                                } else {
+                                    alert("삭제가 취소되었습니다")
+                                }
+                            })
+                        }, 300);
+
+                    }
+                })
+                $("#comment-update-btn").click(function (){
+                    let comment = {
+                        article_id: articleId,
+                        id: id,
+                        nickname: $("#patch-nickname").val(),
+                        body: $("#patch-body").val()
+                    };
+                    $.ajax({
+                        type:"PATCH",
+                        url: "/api/comments/" + id,
+                        data: JSON.stringify(comment),
+                        contentType: "application/json",
+                        success: function (){
+                            alert("댓글이 수정되었습니다");
+                            window.location.reload(true);
+                        }
+                    })
+                })
+            })
+        </script>
+    </head>
+    <body>
+        <!-- 댓글 -->
+        <div id="comments">
+            <div v-for="index in commentList">
+                <div class="card m-2" id="comments-id">
+                    <div class="card-header">
+                        <span id="nickname">{{index.nickname}}</span>
+
+                        <!-- Button trigger modal -->
+                        <button
+                                class="btn btn-sm btn-outline-primary comment-patch-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#comment-edit-modal">수정
+                        </button>
+
+                        <!-- 댓글 삭제 버튼 -->
+                        <button
+                                class="btn btn-sm btn-outline-danger comment-delete-btn">삭제
+                        </button>
+                        <input type="hidden" class="comment-id" :value=`${index.id}`>
+
+                    </div>
+                    <div class="card-body">
+                        <span>{{index.body}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="comment-edit-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">댓글 수정</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <!-- 댓글 수정-->
+                        <div>
+                            <!-- 닉네임 입력 -->
+                            <div class="mb-3">
+                                <label class="form-label">닉네임</label>
+                                <input type="text" class="form-control form-control-sm" id="patch-nickname"
+                                       name="nickname">
+                            </div>
+
+                            <!-- 댓글 본문 입력 -->
+                            <div class="mb-3">
+                                <label class="form-label">댓글 내용</label>
+                                <textarea type="text" class="form-control form-control-sm" rows="3"
+                                          id="patch-body" name="body"></textarea>
+                            </div>
+
+                            <!-- 히든 인풋 -->
+                            <input type="hidden" id="patch-id" name="id">
+                            <input type="hidden" id="patch-article-id" name="article_id">
+
+                            <!-- 전송 버튼 -->
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="comment-update-btn">수정 완료
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
