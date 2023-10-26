@@ -1,98 +1,116 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-  <meta charset="UTF-8">
-  <title>Title</title>
+        <meta charset="UTF-8">
+        <title>Title</title>
 
-  <link rel="stylesheet" th:href="@{css/loginForm.css}">
-    <script>
-        $(function () {
-            $('#createMember').click(function () {
-                let memberDto = {
-                    username: $("#signUsername").val(),
-                    password: $("#signPassword").val()
-                };
-                $.ajax({
-                    type: "POST",
-                    url: "/api/signup",
-                    data: JSON.stringify(memberDto),
-                    contentType: "application/json",
-                    success: function () {
-                        alert("회원가입이 완료되었습니다");
-                        location.href = "/";
+        <link rel="stylesheet" th:href="@{css/loginForm.css}">
+        <script>
+            $(function () {
+                $('#createMember').click(function () {
+                    if ($('#signUsername').val() == 0 || $('#signPassword').val() == 0) {
+                        alert("ID 또는 패스워드를 입력해주세요");
+                        return 0;
                     }
+                    if ($('#signPassword').val() != $('#passwordCheck').val()) {
+                        alert("비밀번호가 일치하지 않습니다.");
+                        return 0;
+                    }
+                    let memberDto = {
+                        username: $("#signUsername").val(),
+                        password: $("#signPassword").val()
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/signup",
+                        data: JSON.stringify(memberDto),
+                        contentType: "application/json",
+                        success: function () {
+                            alert("회원가입이 완료되었습니다");
+                            location.href = "/";
+                        }
+                    })
                 })
             })
-        })
-    </script>
-</head>
-<body>
+        </script>
+    </head>
+    <body>
 
-  <!--header-->
-  <div th:insert="layouts/header.html" id="header"></div>
+        <!--header-->
+        <div th:insert="layouts/header.html" id="header"></div>
 
-  <div class ="row">
-    <div class="col-md-6 mx-auto p-0">
-      <div class="card">
-        <div class="login-box">
-          <div class="login-snip">
-            <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Login</label>
-            <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
-            <div class="login-space">
-              <div class="login">
-                <div class="group">
-                  <label for="username" class="label">Username</label>
-                  <input id="username" type="text" class="input"  placeholder="Enter your username">
-                </div>
-                <div class="group">
-                  <label for="password" class="label">Password</label>
-                  <input id="password" type="password" class="input" data-type="password"
-                         placeholder="Enter your password">
-                </div>
-                <div class="group">
-                  <input id="check" type="checkbox" class="check" checked>
-                  <label for="check"><span class="icon"></span> Keep me Signed in</label>
-                </div>
-                <div class="group">
-                  <input type="submit" class="button" value="Sign In">
-                </div>
-                <div class="hr"></div>
-                <div class="foot">
-                  <a href="#">Forgot Password?</a>
-                </div>
-              </div>
-              <div class="sign-up-form">
-                <div class="group">
-                  <label for="username" class="label">Username</label>
-                  <input id="signUsername" type="text" class="input" placeholder="Create your Username">
-                </div>
+        <div class="row">
+            <div class="col-md-6 mx-auto p-0">
+                <div class="card">
+                    <div class="login-box">
+                        <div class="login-snip">
+                            <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1"
+                                                                                                     class="tab">Login</label>
+                            <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign
+                                                                                                                     Up</label>
+                            <div class="login-space">
+                                <div class="login">
+                                    <form method="post"  th:action="@{/login}">
+                                        <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                                            아이디 혹은 비밀번호가 잘못 입력되었습니다.
+                                        </div>
+                                        <div class="group">
+                                            <label for="username" class="label">Username</label>
+                                            <input name="username" id="username" type="text" class="input"
+                                                   placeholder="Enter your username">
+                                        </div>
+                                        <div class="group">
+                                            <label for="password" class="label">Password</label>
+                                            <input name="password" id="password" type="password" class="input"
+                                                   data-type="password"
+                                                   placeholder="Enter your password">
+                                        </div>
+                                        <div class="group">
+                                            <input id="check" type="checkbox" class="check" checked>
+                                            <label for="check"><span class="icon"></span> Keep me Signed in</label>
+                                        </div>
+                                        <div class="group">
+                                            <input type="submit" class="button" value="Sign In">
+                                        </div>
+                                        <div class="hr"></div>
+                                        <div class="foot">
+                                            <a href="#">Forgot Password?</a>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="sign-up-form">
+                                    <div class="group">
+                                        <label for="username" class="label">Username</label>
+                                        <input id="signUsername" type="text" class="input"
+                                               placeholder="Create your Username">
+                                    </div>
 
-                <div class="group">
-                  <label class="label">Password</label>
-                  <input id="signPassword" type="password" class="input" data-type="password"
-                         placeholder="Create your password">
+                                    <div class="group">
+                                        <label class="label">Password</label>
+                                        <input id="signPassword" type="password" class="input" data-type="password"
+                                               placeholder="Create your password">
+                                    </div>
+                                    <div class="group">
+                                        <label class="label">Repeat Password</label>
+                                        <input id="passwordCheck" type="password" class="input" data-type="password"
+                                               placeholder="Repeat your password">
+                                    </div>
+                                    <div class="group">
+                                        <input type="submit" class="button" id="createMember" value="Sign Up">
+                                    </div>
+                                    <div class="hr"></div>
+                                    <div class="foot">
+                                        <label for="tab-1">Already Member?</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="group">
-                  <label class="label">Repeat Password</label>
-                  <input id="passwordCheck" type="password" class="input" data-type="password"
-                         placeholder="Repeat your password" >
-                </div>
-                <div class="group">
-                  <input type="submit" class="button" id="createMember" value="Sign Up">
-                </div>
-                <div class="hr"></div>
-                <div class="foot">
-                  <label for="tab-1">Already Member?</label>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-</body>
+    </body>
 </html>

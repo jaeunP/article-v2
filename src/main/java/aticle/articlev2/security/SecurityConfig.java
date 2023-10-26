@@ -1,7 +1,9 @@
 package aticle.articlev2.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,8 +20,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService);
     }
 
     @Override
@@ -27,15 +34,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.authorizeRequests()
-                .antMatchers("/", "/signup", "/login", "/css/**", "/api/**").permitAll()
-                .antMatchers("/member/**").authenticated()
+                .antMatchers("/", "/signup", "/login", "/css/**").permitAll()
+                .antMatchers("/articles/new").authenticated()
                 .antMatchers("/admin/**").hasAnyRole("ADMIN");
 
         http.formLogin()
-                .loginPage("/loginForm.html")
-                .defaultSuccessUrl("/")
-                .usernameParameter("username")
-                .passwordParameter("password");
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .defaultSuccessUrl("/")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+
+                .and()
+                    .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login")
+                    .invalidateHttpSession(true);
 
 
 //        http.formLogin().loginPage("/login").defaultSuccessUrl("/", true);
