@@ -19,6 +19,7 @@
                     success: function (response) {
                         console.dir(response);
                         $("#id").html(response.id)
+                        $("#username").html(response.username)
                         $("#title").html(response.title)
                         $("#content").html(response.content)
                     }
@@ -44,7 +45,7 @@
                                 url: "/api/articles/" + id,
                                 success: function () {
                                     alert("게시물이 삭제되었습니다");
-                                    location.href = "/articles";
+                                    location.href = "/";
                                 }
                             })
                         },100)
@@ -62,6 +63,7 @@
             <thead>
                 <tr>
                     <th scope="col">ID</th>
+                    <th scope="col">Username</th>
                     <th scope="col">Tittle</th>
                     <th scope="col">Content</th>
                 </tr>
@@ -69,6 +71,7 @@
             <tbody id="articles">
                 <tr>
                     <th id="id"></th>
+                    <th id="username"></th>
                     <td id="title"></td>
                     <td id="content"></td>
                 </tr>
@@ -76,7 +79,7 @@
         </table>
         <a class="btn btn-primary" id="edit-btn">Edit</a>
         <a class="btn btn-danger" id="delete-btn">Delete</a>
-        <a th:href="@{/articles}" class="btn btn-primary">GO to Article List</a>
+        <a th:href="@{/}" class="btn btn-primary">GO to Article List</a>
 
         <div th:insert="comments/_comments.html" id="comments"></div>
 

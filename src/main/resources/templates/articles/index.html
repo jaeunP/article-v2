@@ -35,6 +35,7 @@
             <thead>
                 <tr>
                     <th scope="col">ID</th>
+                    <th scope="col">Username</th>
                     <th scope="col">Tittle</th>
                     <th scope="col">Content</th>
                 </tr>
@@ -42,6 +43,7 @@
             <tbody id="articles">
                 <tr v-for="index in articleList">
                     <th><span>{{index.id}}</span></th>
+                    <td id="article-username"><span>{{index.username}}</span></td>
                     <td id="article-title" >
                         <a v-bind:href='`/articles/${index.id}`'>
                             <span>{{index.title}}</span>

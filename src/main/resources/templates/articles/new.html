@@ -16,12 +16,12 @@
                     };
                     $.ajax({
                         type: "POST",
-                        url: "/api/articles",
+                        url: "/api/articles/new",
                         data: JSON.stringify(article),
                         contentType: "application/json",
                         success: function (){
                             alert("게시글이 등록이되었습니다");
-                            location.href = "/articles";
+                            location.href = "/";
                         }
                     })
                 })
@@ -39,6 +39,7 @@
 
                 <input type="text" class="form-control" id="new-article-title">
             </div>
+
             <!-- 내용 입력 -->
             <div class="mb-3">
                 <label class="form-label">내용</label>
@@ -46,7 +47,7 @@
             </div>
             <!-- 전송 버튼 -->
             <button type="submit" class="btn btn-primary" id="article-create-btn">Submit</button>
-            <a  th:href="@{/articles}">Back</a>
+            <a  th:href="@{/}">Back</a>
         </div>
 
         <div th:insert="layouts/footer.html" id="footer"></div>

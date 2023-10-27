@@ -22,4 +22,6 @@ public class MemberApiController {
         return ResponseEntity.ok(member);
     }
 
+
+
 }
