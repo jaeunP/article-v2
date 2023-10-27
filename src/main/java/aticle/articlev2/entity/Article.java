@@ -17,17 +17,17 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Member username;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
     private String title;
 
     private String content;
 
     @Builder
-    public Article(Long id, Member username, String title, String content) {
+    public Article(Long id, Member member, String title, String content) {
         this.id = id;
-        this.username = username;
+        this.member = member;
         this.title = title;
         this.content = content;
     }

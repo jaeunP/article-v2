@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -16,7 +18,6 @@ public class MemberService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     public Member signup(MemberDto memberDto) {
-
         if(memberRepository.findByUsername(memberDto.getUsername()).isPresent()){
             throw new RuntimeException("이미 가입되어있는 유저입니다.");
         } if(memberDto.getUsername().isEmpty() && memberDto.getPassword().isEmpty()) throw new RuntimeException("아이디 또는 비번을 입력해주세요.");
@@ -32,5 +33,13 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
+    public Member getMember(String username) {
+        Optional<Member> member = this.memberRepository.findByUsername(username);
+        if (member.isPresent()) {
+            return member.get();
+        } else {
+            throw new RuntimeException("member가 존재하지 않습니다.");
+        }
+    }
 
 }

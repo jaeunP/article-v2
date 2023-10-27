@@ -5,14 +5,11 @@ import aticle.articlev2.entity.Article;
 import aticle.articlev2.entity.Member;
 import aticle.articlev2.repository.ArticleRepository;
 import aticle.articlev2.repository.MemberRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,6 +24,17 @@ public class ArticleService {
         this.articleRepository = articleRepository;
         this.memberRepository = memberRepository;
     }
+
+    public Article getArticle(Long id) {
+        Optional<Article> article = articleRepository.findById(id);
+        if (article.isPresent()) {
+            return article.get();
+        } else {
+            throw new RuntimeException("Article이 존재하지 않습니다.");
+        }
+    }
+
+
 
     //전체 목록 조회
     public List<ArticleDto> index() {
@@ -77,11 +85,7 @@ public class ArticleService {
     @Transactional
     public Article delete(Long id) {
         Article target = articleRepository.findById(id).orElse(null);
-        // 잘못된 요청 처리
-        if (target == null) {
-            return null;
-        }
-        // 대상 삭제
+
         articleRepository.delete(target);
         return target;
     }
@@ -90,7 +94,7 @@ public class ArticleService {
 
         ArticleDto articleDto = ArticleDto.builder()
                 .id(article.getId())
-                .username(article.getUsername().getUsername())
+                .username(article.getMember().getUsername())
                 .title(article.getTitle())
                 .content(article.getContent())
                 .build();
@@ -104,7 +108,7 @@ public class ArticleService {
 
         Article article = Article.builder()
                 .id(articleDto.getId())
-                .username(member.get())
+                .member(member.get())
                 .title(articleDto.getTitle())
                 .content(articleDto.getContent())
                 .build();
@@ -123,7 +127,7 @@ public class ArticleService {
 
 
 
-
+}
 //    public static ArticleDto toDto(Article article) {
 //        return new ArticleDto(
 //                article.getId(),
@@ -139,5 +143,3 @@ public class ArticleService {
 //                dto.getContent()
 //        );
 //    }
-
-}
