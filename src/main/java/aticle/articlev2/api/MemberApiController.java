@@ -6,6 +6,8 @@ import aticle.articlev2.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/api")
 public class MemberApiController {
@@ -16,11 +18,19 @@ public class MemberApiController {
         this.memberService = memberService;
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<MemberDto> getMember(Principal principal) {
+        String username = principal.getName();
+        MemberDto getMember = memberService.getMember(username);
+        return ResponseEntity.ok(getMember);
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<Member> signup(@RequestBody MemberDto memberDto) {
         Member member = memberService.signup(memberDto);
         return ResponseEntity.ok(member);
     }
+
 
 
 

@@ -42,6 +42,10 @@ public class ArticleController {
         return "login/loginForm";
     }
 
+    @GetMapping("/profile")
+    public String profile(){ return "member/profile";}
+
+
 
 
 //    //edit

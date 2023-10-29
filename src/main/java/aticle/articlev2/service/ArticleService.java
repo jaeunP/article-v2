@@ -94,7 +94,7 @@ public class ArticleService {
 
         ArticleDto articleDto = ArticleDto.builder()
                 .id(article.getId())
-                .username(article.getMember().getUsername())
+                .username(article.getMember().getNickname())
                 .title(article.getTitle())
                 .content(article.getContent())
                 .build();

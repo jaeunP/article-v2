@@ -10,6 +10,4 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Override
     ArrayList<Article> findAll();
-
-
 }
